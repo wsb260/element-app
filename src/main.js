@@ -6,7 +6,8 @@ import axios from 'axios'
 
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
-
+Vue.use(router)
+// eslint-disable-next-line no-debugger
 new Vue({
   router,
   store,

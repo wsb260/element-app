@@ -12,12 +12,21 @@
       </div>
       <Location :address="address"></Location>
     </div>
+    <div class="area">
+      <ul class="area_list" v-for="(item,index) in areaList" :key="index">
+        <li>
+          <h4>{{item.name}}</h4>
+          <p>{{item.district}}{{item.address}}</p>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
 import Header from '../components/Header'
 import Location from '../components/Location'
+import AMap from 'AMap'
 export default {
   name: 'address',
   components: {
@@ -38,7 +47,30 @@ export default {
   data () {
     return {
       city: '', // 当前城市
-      search_val: ''
+      search_val: '', // 搜索内容
+      areaList: []
+    }
+  },
+  watch: {
+    search_val () {
+      this.searchPlace()
+    }
+  },
+  methods: {
+    searchPlace () {
+      AMap.plugin('AMap.Autocomplete', () => {
+        // 实例化Autocomplete
+        var autoOptions = {
+          // city 限定城市，默认全国
+          city: this.city
+        }
+        // eslint-disable-next-line no-debugger
+        var autoComplete = new AMap.Autocomplete(autoOptions)
+        autoComplete.search(this.search_val, (status, result) => {
+          // 搜索成功时，result即是对应的匹配数据
+          this.areaList = result.tips
+        })
+      })
     }
   }
 }
@@ -71,6 +103,20 @@ export default {
         background-color: #eee;
         outline:none;
         border:none;
+      }
+    }
+  }
+  .area {
+    margin-top:16px;
+    background-color: #fff;
+    li{
+      border-bottom: 1px solid #eee;
+      padding:8px 16px;
+      color:#aaa;
+      h4{
+        font-weight: bold;
+        color:#333;
+        margin-bottom: 5px;
       }
     }
   }
